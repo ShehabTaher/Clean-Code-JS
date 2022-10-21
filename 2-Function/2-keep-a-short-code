@@ -1,0 +1,84 @@
+/* 
+ > The frist rule : make function small
+ > The second rule : make function smaller
+*/
+
+/* 1) Doing only one thing */
+
+async function login(username,password){
+    // login with the client database
+    const accessToken = await database.login(username,password);
+    if(!accessToken){
+        throw new Error('wrong credentials');
+    }
+    // saving the accessToken in the localStorage
+    localStorage.setItem('accessToken',accessToken)
+
+    //  Redirect to the home page 
+    // Wrong because the functon is not one thing
+    /*
+    redirectTo('/')
+    notifyUser('success',e.message);
+*/
+}
+
+
+
+
+/* 2) Extracting other functions */
+
+// wrong code
+function submitLogin(username,password){
+    try{
+        //checking the validity of the fields
+        if(username.length <3 ) {
+            throw new Error('Username must be at least 3 characters long');
+        }
+        if(password.length <3 ) {
+            throw new Error('password must be at least 3 characters long');
+        }
+
+        //logding in the user
+        await login(username,password)
+
+        //redirect to the home page
+        redirectTo('/')
+        notifyUser('success',e.message);
+
+    }catch(e){
+        // Managing errors
+        console.error(e)
+        notifyUser('error'.e.message)
+    }
+}
+
+
+// Correct Code
+function submitLogin(username,password){
+    try{
+        //checking the validity of the fields
+        validateLoginFields(username,password)
+
+        
+        //logding in the user
+        await login(username,password)
+
+        //redirect to the home page
+        redirectTo('/')
+        notifyUser('success',e.message);
+
+    }catch(e){
+        // Managing errors
+        console.error(e)
+        notifyUser('error'.e.message)
+    }
+}
+function validateLoginFields(username,password){
+    if(username.length <3 ) {
+        throw new Error('Username must be at least 3 characters long');
+    }
+    if(password.length <3 ) {
+        throw new Error('password must be at least 3 characters long');
+    }
+
+}
